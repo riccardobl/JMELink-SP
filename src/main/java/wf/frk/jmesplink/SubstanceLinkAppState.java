@@ -58,7 +58,6 @@ public class SubstanceLinkAppState extends BaseAppState{
 		public OBJMesh obj(){
 			if(obj==null){
 				obj=new OBJMesh(geo);
-				obj=obj.toWorldSpace();
 			}
 			return obj;
 		}
@@ -286,7 +285,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 		while(e_i.hasNext()){
 			Entry e=e_i.next();
 			if(e.selected){
-				meshes.add(e.obj());
+				meshes.add(e.obj().toWorldSpace());
 			}
 		}
 		
