@@ -1,5 +1,11 @@
-
+apply plugin: 'maven'
 apply plugin: 'java'
+
+group="wf.frk.jmesplink"
+
+if (project.hasProperty("DEV_INSTALL")){
+    version="dev"
+}
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -33,7 +39,10 @@ dependencies {
     testCompile "${jme_group}:jme3-core:${jme_version}"
     testCompile "${jme_group}:jme3-lwjgl:${jme_version}"
     testCompile "${jme_group}:jme3-desktop:${jme_version}"
-    testCompile "${jme_group}:jme3-testdata:${jme_version}"
+    testCompile ("${jme_group}:jme3-testdata:${jme_version}") {
+        exclude module: 'jme3-niftygui'
+        exclude module: 'nifty-examples'
+    }
     testCompile "${jme_group}:jme3-effects:${jme_version}"  	    
     
     // Formats

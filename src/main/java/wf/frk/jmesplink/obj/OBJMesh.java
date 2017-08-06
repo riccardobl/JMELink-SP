@@ -34,9 +34,6 @@ public class OBJMesh implements Cloneable{
 	public List<Triangle> triangles=new ArrayList<Triangle>();
 	public static Vector3f getVector3f(VertexBuffer v,int id){
 		if(v==null||v.getNumElements()<=id){
-//			new Exception().printStackTrace();
-//			System.exit(1);
-//			System.out.println("AA");
 			return new Vector3f();
 		}
 		
@@ -45,21 +42,6 @@ public class OBJMesh implements Cloneable{
 		(float)v.getElementComponent(id, 2));
 		
 	}
-	
-//	public static Collection<OBJMesh> meshesFromNode(Node s){
-//		Collection<OBJMesh> meshes=new ArrayList<OBJMesh>();
-//		
-//		s.depthFirstTraversal(sx->{
-//			if(sx instanceof Geometry){
-//				Geometry geo=(Geometry)sx;
-//				OBJMesh m=new OBJMesh(geo);
-//				m=m.toWorldSpace();
-//				meshes.add(m);
-//			}			
-//		});
-//		return meshes;
-//		
-//	}
 	
 	public static Vector2f getVector2f(VertexBuffer v,int id){
 		return new Vector2f((float)v.getElementComponent(id, 0),
@@ -125,13 +107,6 @@ public class OBJMesh implements Cloneable{
 		VertexBuffer n_b = m.getBuffer(Type.Normal);
 		VertexBuffer t_b =  m.getBuffer(Type.TexCoord);
 
-//		for(int i=0;i<n_b.getNumElements();i++){
-//			Vector3f n=new Vector3f();
-//			n.x=(Float)n_b.getElementComponent(i,0);
-//			n.y=(Float)n_b.getElementComponent(i,1);
-//			n.z=(Float)n_b.getElementComponent(i,2);
-//			assert n.length()!=0 : "Normal of length 0";
-//		}
 		
 		for (int i = 0; i+3<=i_a.size(); i += 3) {
 			int vertex_a_index = ((Number) i_a.get(i)).intValue();
