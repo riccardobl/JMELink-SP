@@ -1,0 +1,43 @@
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  	maven {  
+		url "https://jitpack.io" 
+	}
+    jcenter()
+    mavenLocal();
+}
+
+
+
+dependencies {
+    
+    // DDS
+    compileOnly "com.github.riccardobl.DDSWriter:dds_writer:1.0"
+    compileOnly 'com.github.riccardobl.DDSWriter:dds_writer__s3tc_lwjgl2_delegate:1.0'
+    compileOnly 'com.github.riccardobl.DDSWriter:dds_writer__rgtc_lwjgl2_delegate:1.0'
+    compileOnly 'com.github.riccardobl.DDSWriter:dds_writer__cli:1.0'
+    
+    testCompile "com.github.riccardobl.DDSWriter:dds_writer:1.0"
+    testCompile 'com.github.riccardobl.DDSWriter:dds_writer__s3tc_lwjgl2_delegate:1.0'
+    testCompile 'com.github.riccardobl.DDSWriter:dds_writer__rgtc_lwjgl2_delegate:1.0'
+    testCompile 'com.github.riccardobl.DDSWriter:dds_writer__cli:1.0'
+        
+        
+    // JME
+    compileOnly "${jme_group}:jme3-core:${jme_version}"
+    testCompile "${jme_group}:jme3-core:${jme_version}"
+    testCompile "${jme_group}:jme3-lwjgl:${jme_version}"
+    testCompile "${jme_group}:jme3-desktop:${jme_version}"
+    testCompile "${jme_group}:jme3-testdata:${jme_version}"
+    testCompile "${jme_group}:jme3-effects:${jme_version}"  	    
+    
+    // Formats
+    testCompile 'com.google.code.gson:gson:2.8.0'
+    testCompile "com.github.f3b:jme3_f3b:0.3.4"
+    
+}

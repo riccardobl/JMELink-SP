@@ -1,0 +1,16 @@
+.classpath
+.project
+.settings/
+.vscode/
+*.so
+*.dll
+*.xcf
+*.log
+bin/
+build
+gradle/
+.gradle/
+gradlew
+gradlew.bat
+*.blend1
+logging.properties
