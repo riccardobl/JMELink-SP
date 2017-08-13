@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 
+import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.resources.Resources;
 
 public class PhongSubstance extends DDSSubstanceDef{
@@ -35,7 +36,7 @@ public class PhongSubstance extends DDSSubstanceDef{
 		tx_name=tx_name.substring(tx_name.lastIndexOf("_")+1);
 		boolean has_alpha=false;
 		try{
-			BufferedImage bimg=ImageIO.read(new File((substance_fs_path+tx_path).replace("/",File.separator)));
+			BufferedImage bimg=ImageIO.read(new File(PathUtils.toNative(substance_fs_path+tx_path)));
 			has_alpha=bimg.getTransparency()==BufferedImage.TRANSLUCENT;
 		}catch(Exception e){
 			LOGGER.log(Level.WARNING,"Can't read image",e);

@@ -44,13 +44,13 @@ public class SubstanceProjectList extends HashMap<Object,Object>{
 	}
 	
 	public void saveList() throws IOException{
-		File output=new File((_PROJECTS_FS_PATH+"/projects.json").replace("/",File.separator));
+		File output=new File(PathUtils.toNative((_PROJECTS_FS_PATH+"/projects.json")));
 		Files.write(output.toPath(),_JSON.stringify(this).getBytes(Charset.forName("UTF-8")));
 	}
 	
 	public void reloadList() throws IOException{
 		clear();
-		File input=new File((_PROJECTS_FS_PATH+"/projects.json").replace("/",File.separator));
+		File input=new File(PathUtils.toNative(_PROJECTS_FS_PATH+"/projects.json"));
 		if(input.exists()){
 			String json=new String(Files.readAllBytes(input.toPath()),Charset.forName("UTF-8"));
 			putAll((Map<Object,Object>)_JSON.parse(json));

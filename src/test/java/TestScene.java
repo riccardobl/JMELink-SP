@@ -41,6 +41,7 @@ import com.jme3.util.SkyFactory;
 
 import wf.frk.f3b.jme3.F3bLoader;
 import wf.frk.jmesplink.Json;
+import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.SubstanceLinkAppState;
 import wf.frk.jmesplink.SubstanceLinkAppState.SelectionResults;
 
@@ -82,8 +83,7 @@ public class TestScene extends SimpleApplication implements ActionListener{
 			stateManager.attach(envCam);
 
 			F3bLoader.init(assetManager);
-			String tmp=System.getProperty("java.io.tmpdir");
-			if(!tmp.endsWith(File.separator))tmp+=File.separator;
+			String tmp=PathUtils.toNativeDir(System.getProperty("java.io.tmpdir"));
 
 			String assets_root=tmp+"sblinktest";
 			new File(assets_root).mkdir();

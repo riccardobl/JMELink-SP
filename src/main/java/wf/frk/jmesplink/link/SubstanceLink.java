@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import wf.frk.jmesplink.Json;
+import wf.frk.jmesplink.PathUtils;
 
 public class SubstanceLink{
 
@@ -37,7 +38,7 @@ public class SubstanceLink{
 
 	public void createProject(String mesh) throws IOException {
 //		mesh=mesh.replace(File.separator,"/");
-		String meshurl="file://"+mesh;
+		String meshurl=PathUtils.toFileUrl(mesh);
 		Map<Object,Object> project_settings=new HashMap<Object,Object>();
 		project_settings.put("normalMapFormat","OpenGL");
 		project_settings.put("tangentSpaceMode",TANGENTSPACE_MODE.mode);
@@ -105,7 +106,7 @@ public class SubstanceLink{
 	
 	public void saveProject(String path) throws IOException {
 //		path=path.replace(File.separator,"/");
-		String url="file://"+path;
+		String url=PathUtils.toFileUrl(path);
 		cmd("alg.project.save('"+url+"');");
 
 	}
@@ -132,7 +133,7 @@ public class SubstanceLink{
 		cmd("alg.project.close();");
 
 //		path=path.replace(File.separator,"/");
-		String url="file://"+path;
+		String url=PathUtils.toFileUrl(path);
 		cmd("alg.project.open('"+url+"');");
 		return cmd("alg.project.url();").toString().equals(url);
 	}

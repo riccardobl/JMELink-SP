@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 
+import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.SubstanceLinkAppState;
 import wf.frk.jmesplink.resources.Resources;
 
@@ -31,7 +32,7 @@ public class PBRSubstance extends DDSSubstanceDef{
 		tx_name=tx_name.substring(tx_name.lastIndexOf("_")+1);
 		boolean has_alpha=false;
 		try{
-			File f=new File((substance_fs_path+"/"+tx_path).replace("/",File.separator));
+			File f=new File(PathUtils.toNative(substance_fs_path+"/"+tx_path));
 			System.out.println(f);
 			BufferedImage bimg=ImageIO.read(f);
 			has_alpha=bimg.getTransparency()==BufferedImage.TRANSLUCENT;

@@ -20,6 +20,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.texture.plugins.AWTLoader;
 
+import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.SubstanceLinkAppState;
 
 
@@ -58,11 +59,11 @@ public abstract class DDSSubstanceDef implements SubstanceDef{
 									
 								}
 
-								String fs=substance_fs_path.replace("/",File.separator)+File.separator;
+								String fs=PathUtils.toNativeDir(PathUtils.toNative(substance_fs_path));
 							
-								String in=path.replace("/",File.separator);
+								String in=PathUtils.toNative(path);
 								out_path[0]=path.substring(0,path.lastIndexOf("."))+".dds";
-								String out=out_path[0].replace("/",File.separator);
+								String out=PathUtils.toNative(out_path[0]);
 								
 								
 								Map<String,String> options=new HashMap<String,String>();

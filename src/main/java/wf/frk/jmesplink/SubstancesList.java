@@ -59,7 +59,7 @@ public class SubstancesList  extends HashMap<String,Substance>{
 	
 	
 	public void saveList() throws IOException{
-		File output=new File((FS_PATH+"/substances.json").replace("/",File.separator));
+		File output=new File(PathUtils.toNative(FS_PATH+"/substances.json"));
 		Files.write(output.toPath(),_JSON.stringify((Map)this).getBytes(Charset.forName("UTF-8")));		
 	}
 	
