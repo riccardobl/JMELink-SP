@@ -8,7 +8,7 @@ public class PathUtils{
 	}
 	
 	public static String toVirtual(String path){
-		return path.replaceAll(File.separator,"/");
+		return path.replace(File.separator,"/");
 	}
 	
 	public static String toFileUrl(String path){
