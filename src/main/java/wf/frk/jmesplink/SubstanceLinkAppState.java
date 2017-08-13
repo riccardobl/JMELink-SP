@@ -409,7 +409,11 @@ public class SubstanceLinkAppState extends BaseAppState{
 
 	@Override
 	protected void cleanup(Application app) {
-
+		try{
+			LINK.saveProjectAndClose();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 		UPDATE_LOOP=null;
 	}
 
