@@ -47,7 +47,8 @@ import wf.frk.jmesplink.SubstanceLinkAppState.SelectionResults;
 
 public class TestScene extends SimpleApplication implements ActionListener{
 	private final static Logger LOGGER=Logger.getLogger(SubstanceLinkAppState.class.getName());
-
+	private final static boolean _RELEASE=false;
+	
 	public static void main(String[] args) {
 		new TestScene().start();
 	}
@@ -115,7 +116,7 @@ public class TestScene extends SimpleApplication implements ActionListener{
 				}
 
 			},true);
-			SLINK.connect("127.0.0.1",6403,substances_fs_path,projects_fs_path);
+			if(!_RELEASE)SLINK.connect("127.0.0.1",6403,substances_fs_path,projects_fs_path);
 			stateManager.attach(SLINK);
 
 			Spatial scene=assetManager.loadModel("wf/frk/substancejlink/resources/test_scene.f3b");
