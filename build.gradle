@@ -5,6 +5,9 @@ group="wf.frk.jmesplink"
 
 if (project.hasProperty("DEV_INSTALL")){
     version="dev"
+    repositories {
+        mavenLocal()
+    }
 }
 
 sourceCompatibility = 1.7
@@ -14,8 +17,8 @@ repositories {
   	maven {  
 		url "https://jitpack.io" 
 	}
+    maven{ url "http://dl.bintray.com/riccardo/f3b" }
     jcenter()
-    mavenLocal();
 }
 
 
