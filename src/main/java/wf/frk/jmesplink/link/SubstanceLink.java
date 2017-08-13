@@ -66,7 +66,7 @@ public class SubstanceLink{
 //		preset_path=preset_path.replace(File.separator,"/");
 
 //		path=path.replace(File.separator,"/");
-
+		preset_path=PathUtils.toVirtual(preset_path);
 		String map_infoS="null";
 
 		if(resolution!=null){
