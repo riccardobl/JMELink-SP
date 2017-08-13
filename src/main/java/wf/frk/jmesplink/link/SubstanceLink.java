@@ -94,7 +94,7 @@ public class SubstanceLink{
 			for(Entry e1:((Map<Object,Object>)e.getValue()).entrySet()){
 				String s=e1.getValue().toString().trim();
 				if(!s.isEmpty()){
-					s=s.replace(File.separator,"/"); // TODO: This may be not necessary
+					s=PathUtils.toVirtual(s);
 					int i=s.lastIndexOf("/");
 					if(i!=-1) e1.setValue(s.substring(i+1));
 				}

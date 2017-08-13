@@ -77,7 +77,7 @@ public class SubstanceProjectList extends HashMap<Object,Object>{
 		SimpleObjWriter.write((meshes),os,osmtl);
 		os.close();
 		osmtl.close();
-		String obj_path=tempobj.getAbsolutePath().replace(File.separator,"/");
+		String obj_path=PathUtils.toVirtual(tempobj.getAbsolutePath());
 		
 		_LINK.getLink().createProject(obj_path);
 		

@@ -83,8 +83,8 @@ public class SubstanceLinkAppState extends BaseAppState{
 	}
 	
 	public void connect(String ip, int port, String substances_fs_path, String projects_fs_path) throws UnknownHostException, IOException {
-		PROJECTS_FS_PATH=projects_fs_path.replace(File.separator,"/");
-		SUBSTANCES_FS_PATH=substances_fs_path.replace(File.separator,"/");
+		PROJECTS_FS_PATH=PathUtils.toVirtual(projects_fs_path);
+		SUBSTANCES_FS_PATH=PathUtils.toVirtual(substances_fs_path);
 		LINK=new SubstanceLink(ip,port,JSON);
 	}
 	
