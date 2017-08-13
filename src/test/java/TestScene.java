@@ -83,8 +83,9 @@ public class TestScene extends SimpleApplication implements ActionListener{
 
 			F3bLoader.init(assetManager);
 			String tmp=System.getProperty("java.io.tmpdir");
+			if(!tmp.endsWith(File.separator))tmp+=File.separator;
 
-			String assets_root=tmp+File.separator+"sblinktest";
+			String assets_root=tmp+"sblinktest";
 			new File(assets_root).mkdir();
 			assetManager.registerLocator(assets_root,FileLocator.class);
 
