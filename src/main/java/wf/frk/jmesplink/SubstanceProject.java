@@ -90,7 +90,10 @@ public class SubstanceProject{
 					File temppreset=File.createTempFile("substancejmelink",".spexp");
 					Files.write(temppreset.toPath(),preset);
 
-					Map<Object,Object> map=_LINK.getLink().exportTextures(new String[]{substance.getKey()},temppreset.getAbsolutePath(),_SLIST.getFileSystemPath(),null);
+					Map<Object,Object> map=_LINK.getLink().exportTextures(new String[]{substance.getKey()},
+							temppreset.getAbsolutePath(),
+							
+						_SLIST.getFileSystemPath(),null);
 
 					Map<Object,Object> txs=(Map<Object,Object>)map.get(substance.getKey());
 

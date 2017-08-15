@@ -88,6 +88,20 @@ public class SubstanceLinkAppState extends BaseAppState{
 		LINK=new SubstanceLink(ip,port,JSON);
 	}
 	
+	public boolean isConnected(){
+		return LINK!=null;
+	}
+	
+	public void disconnect(){
+		try{			
+			if(LINK!=null)LINK.saveProjectAndClose();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		LINK=null;
+		UPDATE_LOOP=null;
+	}
+	
 	public SubstanceProjectList getProjects(){
 		return PROJECTS;
 	}
@@ -356,11 +370,10 @@ public class SubstanceLinkAppState extends BaseAppState{
 			e.printStackTrace();
 		}
 		if(LINK!=null&&UPDATE_LOOP==null){
-
 			UPDATE_LOOP=new Thread(){
 				@Override
 				public void run() {
-					while(isInitialized()){
+					while(LINK!=null){
 						try{
 							if(isEnabled()){
 								if(LINK!=null){
@@ -409,12 +422,9 @@ public class SubstanceLinkAppState extends BaseAppState{
 
 	@Override
 	protected void cleanup(Application app) {
-		try{
-			LINK.saveProjectAndClose();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		UPDATE_LOOP=null;
+		if(LINK==null)return;
+		
+		disconnect();
 	}
 
 	@Override
