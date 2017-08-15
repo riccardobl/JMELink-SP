@@ -1,7 +1,7 @@
 apply plugin: 'maven'
 apply plugin: 'java'
 
-group="wf.frk.jmesplink"
+group="com.github.riccardobl"
 
 if (project.hasProperty("DEV_INSTALL")){
     version="dev"
