@@ -44,6 +44,8 @@ import wf.frk.jmesplink.Json;
 import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.SubstanceLinkAppState;
 import wf.frk.jmesplink.SubstanceLinkAppState.SelectionResults;
+import wf.frk.jmesplink.substances.PBRSubstance;
+import wf.frk.jmesplink.substances.PhongSubstance;
 
 public class TestScene extends SimpleApplication implements ActionListener{
 	private final static Logger LOGGER=Logger.getLogger(SubstanceLinkAppState.class.getName());
@@ -115,7 +117,9 @@ public class TestScene extends SimpleApplication implements ActionListener{
 					return gson.toJson(map);
 				}
 
-			},true);
+			});
+			SLINK.getSubstances().registeredSubstancesDef().add(new PBRSubstance(true));
+			SLINK.getSubstances().registeredSubstancesDef().add(new PhongSubstance(true));
 			if(!_RELEASE)SLINK.connect("127.0.0.1",6403,substances_fs_path,projects_fs_path);
 			stateManager.attach(SLINK);
 

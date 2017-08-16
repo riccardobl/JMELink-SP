@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 
 import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.SubstanceLinkAppState;
@@ -23,12 +24,9 @@ public class PBRSubstance extends DDSSubstanceDef{
 		super(use_dds);
 	}
 
-
-
-
 	@Override
-	public String getOutputFormat(String tx_name,String tx_path,String substance_fs_path) {
-		if(tx_path.isEmpty())return tx_path;
+	public String getOutputFormat(String tx_name, String tx_path, String substance_fs_path) {
+		if(tx_path.isEmpty()) return tx_path;
 		tx_name=tx_name.substring(tx_name.lastIndexOf("_")+1);
 		boolean has_alpha=false;
 		try{
@@ -39,7 +37,7 @@ public class PBRSubstance extends DDSSubstanceDef{
 		}catch(Exception e){
 			LOGGER.log(Level.WARNING,"Can't read image",e);
 		}
-		if(has_alpha)LOGGER.log(Level.FINE,tx_name+" has alpha channel.");
+		if(has_alpha) LOGGER.log(Level.FINE,tx_name+" has alpha channel.");
 		switch(tx_name){
 			case "BaseColorMap":
 				return has_alpha?"S3TC_DXT5":"S3TC_DXT1";
@@ -57,7 +55,6 @@ public class PBRSubstance extends DDSSubstanceDef{
 		return null;
 	}
 
-	
 	@Override
 	public boolean canMap(Substance s) {
 		String shader=(String)s.get("shader");
@@ -75,22 +72,25 @@ public class PBRSubstance extends DDSSubstanceDef{
 	}
 
 	@Override
-	public Material substanceToMaterial(AssetManager am,Substance substance, String substance_assets_path) {
+	public MaterialMap toMaterial(AssetManager am, Substance substance, String substance_assets_path) {
 		Material mat=new Material(am,"Common/MatDefs/Light/PBRLighting.j3md");
 		mat.setName(substance.get("name").toString());
 		Map<Object,Object> textures=(Map<Object,Object>)substance.get("textures");
 		if(textures!=null){
-		for(Entry e:textures.entrySet()){
-			String tx=e.getKey().toString();
-			if(!e.getValue().toString().isEmpty()){
-				tx=tx.substring(tx.lastIndexOf("_")+1);
-				String p=substance_assets_path+"/"+e.getValue();
-				LOGGER.log(Level.FINE,"Set "+tx+"="+p);
-				mat.setTexture(tx,am.loadTexture(p));
+			for(Entry e:textures.entrySet()){
+				String tx=e.getKey().toString();
+				if(!e.getValue().toString().isEmpty()){
+					tx=tx.substring(tx.lastIndexOf("_")+1);
+					String p=substance_assets_path+"/"+e.getValue();
+					LOGGER.log(Level.FINE,"Set "+tx+"="+p);
+					mat.setTexture(tx,am.loadTexture(p));
+				}
 			}
 		}
-		}
-		return mat;
+		MaterialMap map=new MaterialMap();
+		map.material=mat;
+		map.render_bucket=Bucket.Opaque;
+		return map;
 	}
 
 }

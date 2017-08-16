@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
@@ -40,6 +41,7 @@ import com.jme3.scene.Mesh.Mode;
 import wf.frk.jmesplink.link.SubstanceLink;
 import wf.frk.jmesplink.obj.OBJMesh;
 import wf.frk.jmesplink.obj.SimpleObjWriter;
+import wf.frk.jmesplink.substances.MaterialMap;
 import wf.frk.jmesplink.substances.PBRSubstance;
 import wf.frk.jmesplink.substances.PhongSubstance;
 import wf.frk.jmesplink.substances.Substance;
@@ -74,12 +76,10 @@ public class SubstanceLinkAppState extends BaseAppState{
 	private String PROJECTS_FS_PATH,SUBSTANCES_ASSETS_PATH,SUBSTANCES_FS_PATH;
 	Thread UPDATE_LOOP;
 	private boolean NEED_SUBSTANCES_UPDATE;
-	private final boolean _USE_DDS;
 
-	public SubstanceLinkAppState(String substances_assets_path,Json json,boolean use_dds){
+	public SubstanceLinkAppState(String substances_assets_path,Json json){
 		JSON=json;
 		SUBSTANCES_ASSETS_PATH=substances_assets_path;
-		_USE_DDS=use_dds;
 	}
 	
 	public void connect(String ip, int port, String substances_fs_path, String projects_fs_path) throws UnknownHostException, IOException {
@@ -314,6 +314,8 @@ public class SubstanceLinkAppState extends BaseAppState{
 			CURRENT_PROJECT.open();
 		}
 	}
+	
+	private Map<Material,MaterialMap> _CACHE=new WeakHashMap<Material,MaterialMap>();
 
 	private void applySubstances(final boolean clear_cache) throws IOException {
 
@@ -321,6 +323,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 			if(CURRENT_PROJECT==null||!CURRENT_PROJECT.needReload()) return;
 			Collection<Substance> substances=CURRENT_PROJECT.exportSubstances();
 			SUBSTANCES.addSubstances(substances);
+			_CACHE.clear();
 		}
 		
 		
@@ -329,23 +332,26 @@ public class SubstanceLinkAppState extends BaseAppState{
 
 		for(final Entry e:ENTRIES){
 			final Geometry g=e.geo;
-			if(g.getMaterial()!=null){
-				String mat_name=g.getMaterial().getName();
-	
+			if(g.getMaterial()!=null){				
+				String mat_name=g.getMaterial().getName();					
 				final Substance s=SUBSTANCES.get(mat_name);
 				if(s!=null){
 					LOGGER.log(Level.FINE,"Found substance for "+mat_name);
-
 					getApplication().enqueue(new Runnable(){
 						@Override
 						public void run() {
 							if(clear_cache){
 								getApplication().getAssetManager().clearCache();
 							}
-							Material newmat=s.toMaterial(getApplication().getAssetManager());
-							g.setMaterial(newmat);
+							Material oldmat=g.getMaterial();
+							MaterialMap map=_CACHE.get(oldmat);
+							if(map==null){
+								map=s.toMaterial(getApplication().getAssetManager(),g);
+								_CACHE.put(oldmat,map);
+							}
+							g.setMaterial(map.material);
+							g.setQueueBucket(map.render_bucket);								
 							LOGGER.log(Level.FINE,"Set substance for "+g.getMaterial().getName());
-
 						}
 					});
 				}else{
@@ -409,8 +415,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 	protected void initialize(Application app) {
 		try{
 			SUBSTANCES=new SubstancesList(getApplication().getAssetManager(),SUBSTANCES_ASSETS_PATH,JSON);
-			SUBSTANCES.registeredSubstancesDef().add(new PBRSubstance(_USE_DDS));
-			SUBSTANCES.registeredSubstancesDef().add(new PhongSubstance(_USE_DDS));
+		
 
 		}catch(IOException e){
 			e.printStackTrace();

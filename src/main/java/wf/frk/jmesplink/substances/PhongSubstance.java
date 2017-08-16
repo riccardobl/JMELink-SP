@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 
 import wf.frk.jmesplink.PathUtils;
 import wf.frk.jmesplink.resources.Resources;
@@ -61,7 +62,7 @@ public class PhongSubstance extends DDSSubstanceDef{
 	
 
 	@Override
-	public Material substanceToMaterial(AssetManager am, Substance substance, String substance_assets_path) {
+	public MaterialMap toMaterial(AssetManager am, Substance substance, String substance_assets_path) {
 		Material mat=new Material(am,"Common/MatDefs/Light/Lighting.j3md");
 		mat.setName(substance.get("name").toString());
 		Map<Object,Object> textures=(Map<Object,Object>)substance.get("textures");
@@ -82,7 +83,11 @@ public class PhongSubstance extends DDSSubstanceDef{
 			Number fresnel=(Number)parameters.get("fresnel_str");
 			if(fresnel!=null) mat.setFloat("Shininess",fresnel.floatValue());
 		}
-		return mat;
+		
+		MaterialMap map=new MaterialMap();
+		map.material=mat;
+		map.render_bucket=Bucket.Opaque;
+		return map;
 		
 	}
 
