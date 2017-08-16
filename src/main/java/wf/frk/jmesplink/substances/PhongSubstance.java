@@ -71,7 +71,7 @@ public class PhongSubstance extends DDSSubstanceDef{
 				String tx=e.getKey().toString();
 				if(!e.getValue().toString().isEmpty()){
 					tx=tx.substring(tx.lastIndexOf("_")+1);
-					String p=substance_assets_path+"/"+e.getValue();
+					String p=substance_assets_path+e.getValue();
 					LOGGER.log(Level.FINE,"Set "+tx+"="+p);
 					mat.setTexture(tx,am.loadTexture(p));
 				}

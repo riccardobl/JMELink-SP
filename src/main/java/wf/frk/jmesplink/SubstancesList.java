@@ -65,7 +65,7 @@ public class SubstancesList  extends HashMap<String,Substance>{
 	
 	public void reloadList() throws IOException{
 		clear();
-		AssetInfo info=_AM.locateAsset(new AssetKey(_AM_PATH+"/substances.json"));
+		AssetInfo info=_AM.locateAsset(new AssetKey(_AM_PATH+"substances.json"));
 		if(info!=null){
 			InputStream is=info.openStream();
 			ByteArrayOutputStream bos=new ByteArrayOutputStream();
