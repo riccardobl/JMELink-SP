@@ -33,6 +33,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -57,63 +58,71 @@ public class SubstanceLinkAppState extends BaseAppState{
 		Geometry geo;
 		boolean selected;
 		private OBJMesh obj;
-		public OBJMesh obj(){
+
+		public OBJMesh obj() {
 			if(obj==null){
 				obj=new OBJMesh(geo);
 			}
 			return obj;
 		}
-		
+
 	}
+
 	private SubstanceProject CURRENT_PROJECT;
 
 	private Collection<Entry> ENTRIES=new ConcurrentLinkedQueue<Entry>();
 	private SubstanceProjectList PROJECTS;
 	private SubstancesList SUBSTANCES;
-	
+
 	private SubstanceLink LINK;
 	private Json JSON;
 	private String PROJECTS_FS_PATH,SUBSTANCES_ASSETS_PATH,SUBSTANCES_FS_PATH;
 	Thread UPDATE_LOOP;
 	private boolean NEED_SUBSTANCES_UPDATE;
 
-	public SubstanceLinkAppState(String substances_assets_path,Json json){
+	public SubstanceLinkAppState(AssetManager am,String substances_assets_path,Json json){
 		JSON=json;
 		SUBSTANCES_ASSETS_PATH=substances_assets_path;
+		try{
+			SUBSTANCES=new SubstancesList(am,SUBSTANCES_ASSETS_PATH,JSON);
+
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+
 	}
-	
+
 	public void connect(String ip, int port, String substances_fs_path, String projects_fs_path) throws UnknownHostException, IOException {
 		PROJECTS_FS_PATH=PathUtils.toVirtual(projects_fs_path);
 		SUBSTANCES_FS_PATH=PathUtils.toVirtual(substances_fs_path);
 		LINK=new SubstanceLink(ip,port,JSON);
 	}
-	
-	public boolean isConnected(){
+
+	public boolean isConnected() {
 		return LINK!=null;
 	}
-	
-	public void disconnect(){
-		try{			
-			if(LINK!=null)LINK.saveProjectAndClose();
+
+	public void disconnect() {
+		try{
+			if(LINK!=null) LINK.saveProjectAndClose();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		LINK=null;
 		UPDATE_LOOP=null;
 	}
-	
-	public SubstanceProjectList getProjects(){
+
+	public SubstanceProjectList getProjects() {
 		return PROJECTS;
 	}
-	
-	public SubstancesList getSubstances(){
+
+	public SubstancesList getSubstances() {
 		return SUBSTANCES;
 	}
-	
-	public SubstanceLink getLink(){
+
+	public SubstanceLink getLink() {
 		return LINK;
 	}
-	
 
 	public void removeSpatial(Spatial s) {
 		s.depthFirstTraversal(new SceneGraphVisitor(){
@@ -171,7 +180,6 @@ public class SubstanceLinkAppState extends BaseAppState{
 		});
 	}
 
-
 	public SelectionResults deselectSpatial(Spatial s) {
 		final SelectionResults out=new SelectionResults();
 
@@ -202,7 +210,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 										out.has_project=true;
 										Collection<String> s=PROJECTS.getMeshHashesForProject(pj);
 										for(Entry e1:ENTRIES){
-											if(e1.geo==geo)continue;
+											if(e1.geo==geo) continue;
 											String hash=""+e1.obj().hashCode();
 											if(s.contains(hash)){
 												e1.selected=false;
@@ -217,7 +225,6 @@ public class SubstanceLinkAppState extends BaseAppState{
 								break;
 							}
 						}
-						
 
 					}
 				}
@@ -225,7 +232,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 		});
 		return out;
 	}
-	
+
 	public static final class SelectionResults{
 		public Collection<Geometry> geometries=new ArrayList<Geometry>();
 		public boolean has_project=false;
@@ -238,7 +245,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 			System.err.println("You can't select without a link");
 			return out;
 		}
-		
+
 		s.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial sx) {
@@ -275,10 +282,9 @@ public class SubstanceLinkAppState extends BaseAppState{
 								}
 								break;
 							}
-							
+
 						}
-						
-		
+
 					}
 				}
 			}
@@ -286,13 +292,12 @@ public class SubstanceLinkAppState extends BaseAppState{
 		return out;
 	}
 
-
 	public void editSelected() throws IOException {
 		if(LINK==null){
 			System.err.println("You can't edit without a link");
 			return;
 		}
-		
+
 		Collection<OBJMesh> meshes=new ArrayList<OBJMesh>();
 
 		Iterator<Entry> e_i=ENTRIES.iterator();
@@ -302,7 +307,6 @@ public class SubstanceLinkAppState extends BaseAppState{
 				meshes.add(e.obj().toWorldSpace());
 			}
 		}
-		
 
 		if(CURRENT_PROJECT!=null){
 			CURRENT_PROJECT.saveAndClose();
@@ -314,7 +318,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 			CURRENT_PROJECT.open();
 		}
 	}
-	
+
 	private Map<Material,MaterialMap> _CACHE=new WeakHashMap<Material,MaterialMap>();
 
 	private void applySubstances(final boolean clear_cache) throws IOException {
@@ -325,15 +329,13 @@ public class SubstanceLinkAppState extends BaseAppState{
 			SUBSTANCES.addSubstances(substances);
 			_CACHE.clear();
 		}
-		
-		
-		LOGGER.log(Level.FINE,"applySubstances");
 
+		LOGGER.log(Level.FINE,"applySubstances");
 
 		for(final Entry e:ENTRIES){
 			final Geometry g=e.geo;
-			if(g.getMaterial()!=null){				
-				String mat_name=g.getMaterial().getName();					
+			if(g.getMaterial()!=null){
+				String mat_name=g.getMaterial().getName();
 				final Substance s=SUBSTANCES.get(mat_name);
 				if(s!=null){
 					LOGGER.log(Level.FINE,"Found substance for "+mat_name);
@@ -350,7 +352,7 @@ public class SubstanceLinkAppState extends BaseAppState{
 								_CACHE.put(oldmat,map);
 							}
 							g.setMaterial(map.material);
-							g.setQueueBucket(map.render_bucket);								
+							g.setQueueBucket(map.render_bucket);
 							LOGGER.log(Level.FINE,"Set substance for "+g.getMaterial().getName());
 						}
 					});
@@ -359,15 +361,14 @@ public class SubstanceLinkAppState extends BaseAppState{
 
 				}
 
-
 			}
 		}
 	}
-	
+
 	@Override
 	public void update(float tpf) {
 		try{
-			
+
 			if(LINK!=null&&PROJECTS==null){
 				PROJECTS=new SubstanceProjectList(this,PROJECTS_FS_PATH,SUBSTANCES,JSON);
 				SUBSTANCES.setFsPath(SUBSTANCES_FS_PATH);
@@ -407,28 +408,16 @@ public class SubstanceLinkAppState extends BaseAppState{
 			e.printStackTrace();
 		}
 	}
-	
-
-
 
 	@Override
 	protected void initialize(Application app) {
-		try{
-			SUBSTANCES=new SubstancesList(getApplication().getAssetManager(),SUBSTANCES_ASSETS_PATH,JSON);
-		
-
-		}catch(IOException e){
-			e.printStackTrace();
-		}		
-		
 
 	}
 
-
 	@Override
 	protected void cleanup(Application app) {
-		if(LINK==null)return;
-		
+		if(LINK==null) return;
+
 		disconnect();
 	}
 

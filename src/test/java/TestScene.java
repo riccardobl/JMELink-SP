@@ -95,12 +95,12 @@ public class TestScene extends SimpleApplication implements ActionListener{
 			String substances_fs_path=assets_root+File.separator+"substances";
 			new File(substances_fs_path).mkdir();
 
-			String substances_assets_path="substances";
+			String substances_assets_path="substances/";
 
 			String projects_fs_path=assets_root+File.separator+"projects";
 			new File(projects_fs_path).mkdir();
 
-			SLINK=new SubstanceLinkAppState(substances_assets_path,new Json(){
+			SLINK=new SubstanceLinkAppState(assetManager,substances_assets_path,new Json(){
 
 				Gson gson;
 				{
